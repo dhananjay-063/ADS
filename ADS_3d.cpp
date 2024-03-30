@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string.h>
 using namespace std;
 class fmt
 {
@@ -8,11 +9,38 @@ class fmt
     fmt *lchild,*rchild;
     void accept();
     void display(fmt *root);
-    void search();
+    void inorder(fmt *root);
+    void postorder(fmt *root);
+    void search(fmt *root);
+
     void ht();
     void insert(fmt *root,fmt *next);
     void cal();
-} *root;
+} *root;  
+void fmt::search(fmt *root)
+{
+string n;
+int r;
+cout<<"Enter the name for search : ";
+cin>>n;
+while(root->name != n) {
+         //go to left tree
+         if(root->name > n) {
+            root = root->lchild;
+         }//else go to right tree
+         else {
+            root= root->rchild;
+         }
+         
+         //not found
+         if(root == NULL) {
+            cout<<"null";
+         }
+}
+cout<<"\nNAME\tAGE\tBIRTHDATE\tDEATHDATE\tBLOODGROUP\tGENRATION\tGENDER";
+cout<<"\n"<<root->name<<"\t"<<root->age<<"\t"<<root->bd<<"\t"<<root->dd<<"\t\t"<<root->bg<<"\t\t"<<root->gen<<"\t\t"<<root->gender;
+}
+
 void fmt::accept()
 {
     fmt *next;
@@ -37,88 +65,72 @@ void fmt::accept()
     c++;
     do
     {
-        cout<<"\nDo you want to add new family member information : ";
-        cout<<"\n1.Yes\n2.No";
-        cout<<"\nEnter your choice : ";
-        cin>>ch;
-        switch(ch)
+        cout << "u want to add more family members if yes then press 1 otherwise press 21 : " << endl;
+        cin >> ch;
+        if (ch == 1)
         {
-            case 1:
-             
-             cout<<"Enter the name: ";
-             cin>>next->name;
-             cout<<"Enter age : ";
-             cin>>next->age;
-             cout<<"Enter birthdate : ";
-             cin>>next->bd;
-             cout<<"Enter death date : ";
-             cin>>next->dd;
-             cout<<"Enter blood group: ";
-             cin>>next->bg;
-             cout<<"Enter generation : ";
-             cin>>next->gen;
-             cout<<"Enter gender : ";
-             cin>>next->gender;
-             next->lchild=next->rchild=NULL;
-             insert(root,next);
-             break;
-             case 2:
-             cout<<"Exit";
-             break;
-             default:
-             cout<<"wrong choice";
-             }
-    } while (ch!=2);
+            next = new fmt();
+            cout << "enter the following family information :" << endl;
+            cout<<"Enter the name: ";
+            cin>>next->name;
+            cout<<"Enter age : ";
+            cin>>next->age;
+            cout<<"Enter birthdate : ";
+            cin>>next->bd;
+            cout<<"Enter death date : ";
+            cin>>next->dd;
+            cout<<"Enter blood group: ";
+            cin>>next->bg;
+            cout<<"Enter generation : ";
+            cin>>next->gen;
+            cout<<"Enter gender : ";
+            cin>>next->gender;
     
+            next->lchild = NULL;
+            next->rchild = NULL;
+            insert(root, next);
+        }
+    } while (ch == 1);
 }
 void fmt::insert(fmt *root,fmt *next)
 {
     int ch;
-    do
+   string chr;
+    cout << "where u want to inserted data either left or right of "<< "'" << root->name << "'" << " L or R : " << endl;
+    cin >> chr;
+    if (chr == "l" || chr == "L")
     {
-       cout<<"\nWhere you want to add new family member info : ";
-       cout<<"\n1.Left side\n2.Right side\n3.exit ";
-       cout<<"\nEnter your choice : ";
-       cin>>ch;
-       switch(ch)
-       {
-        case 1:
-        if(root->lchild==NULL)
+        if (root->lchild == NULL)
         {
-            root->lchild=next;
-            cout<<"Record added at left side";
             c++;
+            root->lchild = next;
+  cout<<"Inserted successfully";
         }
         else
         {
-            insert(root->lchild,next);
+            insert(root->lchild, next);
         }
-        break;
-        case 2:
-        if(root->rchild==NULL)
+    }
+    if (chr == "r" || chr == "R")
+    {
+        if (root->rchild == NULL)
         {
-            root->rchild=next;
-             cout<<"Record added at right side";
             c++;
+            root->rchild = next;
+            cout<<"Inserted successfully";
         }
         else
         {
-            insert(root->rchild,next);
+            insert(root->rchild, next);
         }
-        break;
-        case 3:
-        cout<<"Exit";
-        break;
-        default:
-        cout<<"Wrong choice";
-       }
-
-    } while (ch!=3);
+    }
 }
 void fmt::display(fmt *root)
 {
     if(root==NULL)
+{
     return;
+}
     else
     {
         cout<<"\n"<<root->name<<"\t"<<root->age<<"\t"<<root->bd<<"\t"<<root->dd<<"\t\t"<<root->bg<<"\t\t"<<root->gen<<"\t\t"<<root->gender;
@@ -131,6 +143,32 @@ void fmt::cal()
 {
     cout<<"The total number of record : "<<c;
 }
+void fmt::inorder(fmt *root)
+{
+
+    if(root==NULL)
+    return;
+    else
+    {
+        inorder(root->lchild);
+        cout<<"\n"<<root->name<<"\t"<<root->age<<"\t"<<root->bd<<"\t"<<root->dd<<"\t\t"<<root->bg<<"\t\t"<<root->gen<<"\t\t"<<root->gender;
+        inorder(root->rchild);
+    }
+}
+void fmt::postorder(fmt *root)
+{
+
+    if(root==NULL)
+    return;
+    else
+    {
+        postorder(root->lchild);
+        postorder(root->rchild);
+        cout<<"\n"<<root->name<<"\t"<<root->age<<"\t"<<root->bd<<"\t"<<root->dd<<"\t\t"<<root->bg<<"\t\t"<<root->gen<<"\t\t"<<root->gender;
+      
+    }
+}
+
 int main()
 {
     fmt f;
@@ -138,7 +176,7 @@ int main()
     do
     {
         cout<<"\nWELCOME TO FAMILY TREE ";
-        cout<<"\n1.Add the family member\n2.display the family member\n3.Calculate total record\n4.exit ";
+        cout<<"\n1.Add the family member\n2.display the family member by preorder\n3.display the family member by inorder\n4.display the family member by postorder\n5.Calculate total record\n6.find\n7.exit ";
         cout<<"\nEnter your choice : ";
         cin>>ch;
         switch(ch)
@@ -152,15 +190,26 @@ int main()
             
             break;
             case 3:
-            f.cal();
+            cout<<"\nNAME\tAGE\tBIRTHDATE\tDEATHDATE\tBLOODGROUP\tGENRATION\tGENDER";
+            f.inorder(root);
             break;
             case 4:
+            cout<<"\nNAME\tAGE\tBIRTHDATE\tDEATHDATE\tBLOODGROUP\tGENRATION\tGENDER";
+            f.postorder(root);
+            break;
+            case 5:
+            f.cal();
+            break;
+            case 6:
+            f.search(root);
+            break;
+            case 7:
             cout<<"Thanks for visiting...!!!";
             break;
             default:
             cout<<"Wrong choice";
 
         }
-    } while (ch!=4);
+    } while (ch!=7);
     
 }
